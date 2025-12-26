@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "build":"npx prisma generate",
+    "build":"npx prisma@5.10.0 generate",
     "seed": "node prisma/seed.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@getbrevo/brevo": "^3.0.1",
-    "@prisma/client": "^5.10.0",
+    "@prisma/client": "5.10.0",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^1.41.3",
     "cookie-parser": "^1.4.7",
