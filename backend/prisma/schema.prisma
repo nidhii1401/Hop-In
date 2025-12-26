@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int               @id @default(autoincrement())
+  fullName         String
+  email            String            @unique
+  phone            String?           @unique
+  passwordHash     String
+  role             String
+  isVerified       Boolean           @default(false)
+  otp              String?
+  otpExpiry        DateTime?
+  avatarUrl        String?
+  refreshToken     String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  hostels          Hostel[]          @relation("OwnerHostels")
+  hostellerProfile HostellerProfile?
+  stays            Stay[]            @relation("HostellerStays")
+}
+
+model HostellerProfile {
+  userId      Int     @id
+  collegeName String?
+  course      String?
+  branch      String?
+  yearOfStudy String?
+  bio         String?
+  user        User    @relation(fields: [userId], references: [id])
+}
+
+model Hostel {
+  id                Int             @id @default(autoincrement())
+  ownerId           Int
+  name              String
+  description       String?
+  addressLine       String?
+  area              String?
+  city              String?
+  state             String?
+  pincode           String?
+  landmark          String?
+  nearCollege       String?
+  genderType        String?
+  messType          String          @default("NONE")
+  messPricePerMonth Decimal?
+  messDescription   String?
+  rules             String?
+  isActive          Boolean         @default(true)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  owner             User            @relation("OwnerHostels", fields: [ownerId], references: [id])
+  hostelAmenities   HostelAmenity[]
+  media             HostelMedia[]
+  rooms             Room[]
+  stays             Stay[]          @relation("HostelStays")
+
+  @@index([city])
+  @@index([area])
+  @@index([messType])
+  @@index([nearCollege])
+}
+
+model Room {
+  id            Int           @id @default(autoincrement())
+  hostelId      Int
+  roomNumber    String?
+  floor         String?
+  roomType      String
+  capacity      Int
+  pricePerMonth Decimal
+  isActive      Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  hostel        Hostel        @relation(fields: [hostelId], references: [id])
+  roomAmenities RoomAmenity[]
+  stays         Stay[]        @relation("RoomStays")
+
+  @@index([hostelId])
+  @@index([roomType])
+  @@index([pricePerMonth])
+}
+
+model Amenity {
+  id              Int             @id @default(autoincrement())
+  keyName         String          @unique
+  displayName     String
+  scope           String          @default("BOTH")
+  hostelAmenities HostelAmenity[]
+  roomAmenities   RoomAmenity[]
+}
+
+model HostelAmenity {
+  hostelId  Int
+  amenityId Int
+  amenity   Amenity @relation(fields: [amenityId], references: [id])
+  hostel    Hostel  @relation(fields: [hostelId], references: [id])
+
+  @@id([hostelId, amenityId])
+}
+
+model RoomAmenity {
+  roomId    Int
+  amenityId Int
+  amenity   Amenity @relation(fields: [amenityId], references: [id])
+  room      Room    @relation(fields: [roomId], references: [id])
+
+  @@id([roomId, amenityId])
+}
+
+model HostelMedia {
+  id        Int      @id @default(autoincrement())
+  hostelId  Int
+  mediaType String
+  url       String
+  isCover   Boolean  @default(false)
+  sortOrder Int?     @default(0)
+  createdAt DateTime @default(now())
+  hostel    Hostel   @relation(fields: [hostelId], references: [id])
+
+  @@index([hostelId])
+}
+
+model Stay {
+  id              Int       @id @default(autoincrement())
+  hostellerId     Int
+  hostelId        Int
+  roomId          Int?
+  initiatedBy     String?
+  status          String
+  isMessOpted     Boolean?
+  messPriceAtJoin Decimal?
+  startDate       DateTime?
+  endDate         DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  hostel          Hostel    @relation("HostelStays", fields: [hostelId], references: [id])
+  hosteller       User      @relation("HostellerStays", fields: [hostellerId], references: [id])
+  room            Room?     @relation("RoomStays", fields: [roomId], references: [id])
+
+  @@index([hostellerId])
+  @@index([hostelId])
+  @@index([status])
+}

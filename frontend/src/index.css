@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+:root {
+  --scroll-thumb: #f97316;
+  --scroll-thumb-hover: #ea580c;
+  --scroll-track: #e7e5e4;
+  /* Updated dark mode variables with #0c0a09 */
+  --scroll-thumb-dark: #44403c;
+  /* Stone-700 for better contrast */
+  --scroll-thumb-dark-hover: #57534e;
+  /* Stone-600 */
+  --scroll-track-dark: #0c0a09;
+  /* Stone-950 */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+@media (prefers-color-scheme: dark) {
+  * {
+    scrollbar-color: var(--scroll-thumb-dark) var(--scroll-track-dark);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--scroll-thumb) 0%, #ea580c 100%);
+  border-radius: 9999px;
+  border: 2px solid var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--scroll-thumb-hover) 0%, #c2410c 100%);
+}
+
+/* Dark Mode Overrides */
+.dark ::-webkit-scrollbar-track {
+  background: var(--scroll-track-dark);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  /* Using a solid or subtle gradient so it stands out against #0c0a09 */
+  background: var(--scroll-thumb-dark);
+  border: 2px solid var(--scroll-track-dark);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-thumb-dark-hover);
+}
+
+/* Animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+.animate-typewriter {
+  overflow: hidden;
+  border-right: 2px solid #f97316;
+  white-space: nowrap;
+  animation: typewriter 1.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes blink-caret {
+
+  from,
+  to {
+    border-color: transparent;
+  }
+
+  50% {
+    border-color: #f97316;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
