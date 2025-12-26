@@ -45,8 +45,8 @@ const LoginPage = () => {
 
   const fillDummyData = () => {
     const dummyData = role === 'OWNER' ? {
-      email: 'owner@hopin.com',
-      password: 'password123'
+      email: 'praveensingh99036@gmail.com',
+      password: '123456'
     } : {
       email: 'student@hopin.com',
       password: 'password123'
