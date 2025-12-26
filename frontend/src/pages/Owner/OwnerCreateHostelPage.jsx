@@ -5,7 +5,7 @@ import { Building, Save, ArrowLeft, Zap } from 'lucide-react';
 import { createHostel } from '../../apis/ownerApis.js';
 import { toastError, toastSuccess } from '../../utils/toast.js';
 
-import BasicDetailsSection from './compo/createHostelBasic.jsx';
+import BasicDetailsSection from './compo/CreateHostelBasic.jsx';
 import AddressSection from './compo/AddressSection.jsx';
 import FacilitiesSection from './compo/FacilitiesSection.jsx';
 import CreateRoomsSection from './compo/CreateRoomSection.jsx';
