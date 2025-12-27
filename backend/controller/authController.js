@@ -2,8 +2,8 @@ import asyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import prisma from "../db.js"; 
-import { sendMail } from "../utils/Brevoemail.js"; 
+import prisma from "../db.js";
+import { sendMail } from "../utils/Brevoemail.js";
 
 // --- HELPER FUNCTIONS ---
 
@@ -22,7 +22,7 @@ const sendTokenResponse = (user, statusCode, res) => {
   const options = {
     httpOnly: true, // Prevents XSS
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
   };
 
@@ -38,7 +38,7 @@ const sendTokenResponse = (user, statusCode, res) => {
       avatar: user.avatarUrl,
     },
     // We send the token here too, just in case you want to use localStorage as backup
-    token: token 
+    token: token,
   });
 };
 
@@ -49,11 +49,13 @@ export const SignUp = asyncHandler(async (req, res) => {
   const { fullName, email, phone, password, role, avatarUrl } = req.body;
 
   if (!fullName || !email || !password || !role) {
-    return res.status(400).json({ message: "All required fields must be filled" });
+    return res
+      .status(400)
+      .json({ message: "All required fields must be filled" });
   }
 
   // Prevent Admin signup via API
-  if (!["HOSTELLER", "OWNER","ADMIN"].includes(role)) {
+  if (!["HOSTELLER", "OWNER", "ADMIN"].includes(role)) {
     return res.status(400).json({ message: "Invalid role" });
   }
 
@@ -68,9 +70,14 @@ export const SignUp = asyncHandler(async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   const otp = generateOTP();
   const otpHash = await bcrypt.hash(otp, 10);
-  
+
   // Default Avatar Logic
-  const finalAvatar = avatarUrl || `https://api.dicebear.com/7.x/adventurer/svg?seed=${fullName.replace(/\s+/g, '')}`;
+  const finalAvatar =
+    avatarUrl ||
+    `https://api.dicebear.com/7.x/adventurer/svg?seed=${fullName.replace(
+      /\s+/g,
+      ""
+    )}`;
 
   await prisma.user.create({
     data: {
@@ -88,7 +95,11 @@ export const SignUp = asyncHandler(async (req, res) => {
 
   // Send OTP
   try {
-    await sendMail(email, "Verify Account", `<p>Your code is: <b>${otp}</b></p>`);
+    await sendMail(
+      email,
+      "Verify Account",
+      `<p>Your code is: <b>${otp}</b></p>`
+    );
   } catch (error) {
     console.error("Email failed", error);
     // Proceed anyway, user can resend later
@@ -131,7 +142,8 @@ export const verifyOtp = asyncHandler(async (req, res) => {
 export const Login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) return res.status(400).json({ message: "Fill all fields" });
+  if (!email || !password)
+    return res.status(400).json({ message: "Fill all fields" });
 
   const user = await prisma.user.findUnique({ where: { email } });
 
@@ -143,12 +155,21 @@ export const Login = asyncHandler(async (req, res) => {
     const otp = generateOTP();
     await prisma.user.update({
       where: { id: user.id },
-      data: { otp: await bcrypt.hash(otp, 10), otpExpiry: new Date(Date.now() + 10 * 60 * 1000) },
+      data: {
+        otp: await bcrypt.hash(otp, 10),
+        otpExpiry: new Date(Date.now() + 10 * 60 * 1000),
+      },
     });
-    
+
     try {
-        await sendMail(email, "Verify Account", `<p>Your code is: <b>${otp}</b></p>`);
-    } catch(e) { console.log(e) }
+      await sendMail(
+        email,
+        "Verify Account",
+        `<p>Your code is: <b>${otp}</b></p>`
+      );
+    } catch (e) {
+      console.log(e);
+    }
 
     return res.status(403).json({
       success: false,
@@ -163,26 +184,26 @@ export const Login = asyncHandler(async (req, res) => {
 
 // 4. CHECK AUTH (For App Reload)
 export const checkAuth = asyncHandler(async (req, res) => {
-    // If the middleware 'verifyToken' passed, req.user is already set!
-    // We just need to fetch the latest user details.
-    
-    // Note: You must protect this route with 'verifyToken' middleware in routes
-    const user = await prisma.user.findUnique({ where: { id: req.user.userId } });
+  // If the middleware 'verifyToken' passed, req.user is already set!
+  // We just need to fetch the latest user details.
 
-    if (!user) {
-        return res.status(401).json({ message: "User not found" });
-    }
+  // Note: You must protect this route with 'verifyToken' middleware in routes
+  const user = await prisma.user.findUnique({ where: { id: req.user.userId } });
 
-    res.status(200).json({
-        success: true,
-        user: {
-            id: user.id,
-            fullName: user.fullName,
-            email: user.email,
-            role: user.role,
-            avatar: user.avatarUrl,
-        }
-    });
+  if (!user) {
+    return res.status(401).json({ message: "User not found" });
+  }
+
+  res.status(200).json({
+    success: true,
+    user: {
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatarUrl,
+    },
+  });
 });
 
 // 5. LOGOUT
@@ -196,29 +217,29 @@ export const Logout = (req, res) => {
 
 // 6. UPDATE PROFILE
 export const updateProfile = asyncHandler(async (req, res) => {
-  const { 
-    fullName, 
-    email, 
-    phone, 
-    currentPassword, 
-    newPassword, 
+  const {
+    fullName,
+    email,
+    phone,
+    currentPassword,
+    newPassword,
     avatarUrl,
     // Hosteller Specific Fields
-    collegeName, 
-    course, 
-    branch, 
-    yearOfStudy, 
-    bio 
+    collegeName,
+    course,
+    branch,
+    yearOfStudy,
+    bio,
   } = req.body;
   const userId = req.user?.userId;
 
   if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
-  const user = await prisma.user.findUnique({ 
+  const user = await prisma.user.findUnique({
     where: { id: userId },
     include: {
-      hostellerProfile: true
-    }
+      hostellerProfile: true,
+    },
   });
   if (!user) return res.status(404).json({ message: "User not found" });
 
@@ -233,7 +254,7 @@ export const updateProfile = asyncHandler(async (req, res) => {
   // Case A: User uploaded a file (via Cloudinary middleware)
   if (req.file) {
     updateData.avatarUrl = req.file.path;
-  } 
+  }
   // Case B: User sent a new Dicebear URL string
   else if (avatarUrl) {
     updateData.avatarUrl = avatarUrl;
@@ -242,17 +263,20 @@ export const updateProfile = asyncHandler(async (req, res) => {
   // 3. Handle Password Change
   if (currentPassword && newPassword) {
     const isMatch = await bcrypt.compare(currentPassword, user.passwordHash);
-    if (!isMatch) return res.status(400).json({ message: "Incorrect current password" });
+    if (!isMatch)
+      return res.status(400).json({ message: "Incorrect current password" });
     updateData.passwordHash = await bcrypt.hash(newPassword, 10);
   }
 
   // 4. Handle Hosteller Profile Update (if user is HOSTELLER)
   let hostellerProfileUpdate = {};
-  if (user.role === 'HOSTELLER') {
-    if (collegeName !== undefined) hostellerProfileUpdate.collegeName = collegeName;
+  if (user.role === "HOSTELLER") {
+    if (collegeName !== undefined)
+      hostellerProfileUpdate.collegeName = collegeName;
     if (course !== undefined) hostellerProfileUpdate.course = course;
     if (branch !== undefined) hostellerProfileUpdate.branch = branch;
-    if (yearOfStudy !== undefined) hostellerProfileUpdate.yearOfStudy = yearOfStudy;
+    if (yearOfStudy !== undefined)
+      hostellerProfileUpdate.yearOfStudy = yearOfStudy;
     if (bio !== undefined) hostellerProfileUpdate.bio = bio;
   }
 
@@ -278,8 +302,8 @@ export const updateProfile = asyncHandler(async (req, res) => {
         updatedHostellerProfile = await tx.hostellerProfile.create({
           data: {
             userId: userId,
-            ...hostellerProfileUpdate
-          }
+            ...hostellerProfileUpdate,
+          },
         });
       }
     }
@@ -296,15 +320,16 @@ export const updateProfile = asyncHandler(async (req, res) => {
     role: result.updatedUser.role,
     avatar: result.updatedUser.avatarUrl,
     // Include hosteller profile data if user is hosteller
-    ...(user.role === 'HOSTELLER' && result.updatedHostellerProfile && {
-      hostellerProfile: {
-        collegeName: result.updatedHostellerProfile.collegeName,
-        course: result.updatedHostellerProfile.course,
-        branch: result.updatedHostellerProfile.branch,
-        yearOfStudy: result.updatedHostellerProfile.yearOfStudy,
-        bio: result.updatedHostellerProfile.bio,
-      }
-    })
+    ...(user.role === "HOSTELLER" &&
+      result.updatedHostellerProfile && {
+        hostellerProfile: {
+          collegeName: result.updatedHostellerProfile.collegeName,
+          course: result.updatedHostellerProfile.course,
+          branch: result.updatedHostellerProfile.branch,
+          yearOfStudy: result.updatedHostellerProfile.yearOfStudy,
+          bio: result.updatedHostellerProfile.bio,
+        },
+      }),
   };
 
   res.status(200).json({
