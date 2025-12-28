@@ -126,7 +126,7 @@ const HostellerDashboard = () => {
                       alt="Hostel"
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:hidden"></div>
+                    <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent md:hidden"></div>
                     <div className="absolute bottom-4 left-4 text-white md:hidden">
                       <h3 className="font-bold text-lg">
                         {activeStay.hostelName}
@@ -281,7 +281,7 @@ const HostellerDashboard = () => {
           </div>
 
           {/* Explore Promo Widget */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-600 to-orange-800 p-6 text-white shadow-lg">
+          <div className="relative overflow-hidden rounded-2xl bg-linear-to-br from-orange-600 to-orange-800 p-6 text-white shadow-lg">
             <div className="relative z-10">
               <h3 className="font-bold text-xl mb-2">Find your next home</h3>
               <p className="text-orange-100 text-sm mb-4">

@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
-import { X, Download, Trash2, ZoomIn, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  X,
+  Download,
+  Trash2,
+  ZoomIn,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { deleteHostelMedia } from "../../../apis/ownerApis.js";
 
-const HostelImageGallery = ({ 
-  images = [], 
+const HostelImageGallery = ({
+  images = [],
   hostelId = null,
   onClose,
   onDelete,
   isDeleting = false,
-  deletingImageId = null
+  deletingImageId = null,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -18,7 +25,9 @@ const HostelImageGallery = ({
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
         <div className="bg-white dark:bg-stone-900 p-6 rounded-xl shadow-xl border border-stone-200 dark:border-stone-800 w-full max-w-md mx-4">
           <div className="text-center">
-            <p className="text-stone-600 dark:text-stone-400">No images to display</p>
+            <p className="text-stone-600 dark:text-stone-400">
+              No images to display
+            </p>
             <button
               onClick={onClose}
               className="mt-4 px-4 py-2 bg-stone-600 text-white rounded-lg hover:bg-stone-700 transition-colors"
@@ -33,11 +42,23 @@ const HostelImageGallery = ({
 
   const currentImage = images[currentIndex];
 
-  const handlePrevious = () => {
-    setCurrentIndex((prev) => prev === 0 ? images.length - 1 : prev - 1);
+  // const handlePrevious = () => {
+  //   setCurrentIndex((prev) => prev === 0 ? images.length - 1 : prev - 1);
+  // };
+
+  // const handleNext = () => {
+  //   setCurrentIndex((prev) => (prev + 1) % images.length);
+  // };
+
+  const handlePrevious = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
-  const handleNext = () => {
+  const handleNext = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     setCurrentIndex((prev) => (prev + 1) % images.length);
   };
 
@@ -47,30 +68,32 @@ const HostelImageGallery = ({
     }
   };
 
-  const handleDownload = () => {
-    const link = document.createElement('a');
+  const handleDownload = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const link = document.createElement("a");
     link.href = currentImage.url;
     link.download = `hostel-image-${currentIndex + 1}.jpg`;
-    link.target = '_blank';
+    link.target = "_blank";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'ArrowLeft') handlePrevious();
-    if (e.key === 'ArrowRight') handleNext();
-    if (e.key === 'Escape') onClose();
+    if (e.key === "ArrowLeft") handlePrevious();
+    if (e.key === "ArrowRight") handleNext();
+    if (e.key === "Escape") onClose();
   };
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
       onClick={onClose}
       onKeyDown={handleKeyDown}
       tabIndex={0}
     >
-      <div 
+      <div
         className="relative w-full h-full flex items-center justify-center"
         onClick={(e) => e.stopPropagation()}
       >
@@ -110,7 +133,7 @@ const HostelImageGallery = ({
           />
 
           {/* Image Info Overlay */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+          <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/80 to-transparent p-6">
             <div className="flex items-center justify-between text-white">
               <div>
                 <h3 className="text-lg font-semibold">
@@ -122,7 +145,7 @@ const HostelImageGallery = ({
                   </span>
                 )}
               </div>
-              
+
               {/* Action Buttons */}
               <div className="flex items-center gap-2">
                 <button
@@ -132,7 +155,7 @@ const HostelImageGallery = ({
                 >
                   <Download size={20} />
                 </button>
-                
+
                 {hostelId && currentImage.id && (
                   <button
                     onClick={() => handleDelete(currentImage.id)}
@@ -160,9 +183,9 @@ const HostelImageGallery = ({
                 key={image.id}
                 onClick={() => setCurrentIndex(index)}
                 className={`w-16 h-16 rounded overflow-hidden border-2 transition-all ${
-                  index === currentIndex 
-                    ? 'border-orange-500 scale-110' 
-                    : 'border-transparent hover:border-white/50'
+                  index === currentIndex
+                    ? "border-orange-500 scale-110"
+                    : "border-transparent hover:border-white/50"
                 }`}
               >
                 <img

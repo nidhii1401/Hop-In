@@ -29,7 +29,7 @@ const HostellerLayout = () => {
   const navItems = [
     // { name: "Dashboard", path: "/hosteller/dashboard", icon: Home },
     { name: "Browse Hostels", path: "/hosteller/browse", icon: Search },
-    { name: "My Requests", path: "/hosteller/requests", icon: Send },
+    // { name: "My Requests", path: "/hosteller/requests", icon: Send },
     { name: "My Stay", path: "/hosteller/stay", icon: Bed },
   ];
 
