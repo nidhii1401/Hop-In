@@ -228,7 +228,7 @@ const BrowseHostels = () => {
         <section className="col-span-1 lg:col-span-3">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
             <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">
-              {showSkeleton ? 'Updating results…' : `Showing ${hostels.length} Hostels`}
+              {showSkeleton ? 'Loading...' : `Showing ${hostels.length} Hostels`}
             </h2>
 
             <div className="relative w-full sm:w-auto">

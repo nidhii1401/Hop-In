@@ -11,6 +11,7 @@ import {
   MapPin,
   Users,
   BedDouble,
+  Eye,
   CheckCircle,
   User,
   Phone,
@@ -24,6 +25,7 @@ import { getHostelById } from "../../apis/hostellerApis.js";
 import { useSelector } from "react-redux";
 import Loader from "./UI/Loader.jsx";
 import { getUserAvatar } from "../../utils/avatarUtils.js";
+import HostelImageGallery from "../Owner/compo/HostelImageGallery";
 
 const amenityIconMap = {
   "Wi-Fi": Wifi,
@@ -48,6 +50,14 @@ const HostelDetail = () => {
   const [copiedEmail, setCopiedEmail] = useState(false);
 
   const { user } = useSelector((state) => state.auth);
+
+  // state for view images functionlity
+  const [showGallery, setShowGallery] = useState(false);
+
+  // Handling closing gallery
+  const handleCloseGallery = () => {
+    setShowGallery(false);
+  };
 
   // Add navigation handler
   const handleNavigate = (hostel_id) => {
@@ -179,7 +189,7 @@ const HostelDetail = () => {
       </div>
 
       {/* Image Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 h-[400px] md:h-[500px]">
+      {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4 h-[400px] md:h-[500px]">
         <div className="md:col-span-2 md:row-span-2 relative rounded-2xl overflow-hidden group">
           <img
             src={mainImage}
@@ -199,7 +209,50 @@ const HostelDetail = () => {
             />
           </div>
         ))}
+      </div> */}
+
+      {/* Image Grid with View All Button */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 h-[400px] md:h-[500px]">
+        <div
+          className="md:col-span-2 md:row-span-2 relative rounded-2xl overflow-hidden group cursor-pointer"
+          onClick={() => setShowGallery(true)}
+        >
+          <img
+            src={mainImage}
+            alt="Main View"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <span className="bg-white/90 text-stone-800 px-4 py-2 rounded-full font-medium flex items-center gap-2">
+              <Eye size={18} /> View All
+            </span>
+          </div>
+        </div>
+        {otherImages.map((img, idx) => (
+          <div
+            key={idx}
+            className="relative rounded-2xl overflow-hidden group hidden md:block"
+          >
+            <img
+              src={img}
+              alt={`View ${idx + 1}`}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+          </div>
+        ))}
       </div>
+
+      {/* Image Gallery Modal */}
+      {showGallery && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90">
+          <div className="w-full max-w-5xl max-h-[90vh]">
+            <HostelImageGallery
+              images={imageUrls.map((url) => ({ url }))}
+              onClose={handleCloseGallery}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Main Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -429,7 +482,9 @@ const HostelDetail = () => {
                 <div className="relative w-10 h-10 rounded-full ring-2 ring-white dark:ring-stone-900 shadow-sm hover:scale-105 transition-transform duration-200">
                   {hostel.owner.avatarUrl ? (
                     <img
-                      src={hostel.owner.avatarUrl || getUserAvatar(hostel.owner)}
+                      src={
+                        hostel.owner.avatarUrl || getUserAvatar(hostel.owner)
+                      }
                       alt={`${hostel.owner.fullName}'s profile`}
                       className="h-full w-full object-cover rounded-full"
                       onError={(e) => {
