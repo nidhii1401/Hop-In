@@ -120,7 +120,7 @@ const FilterSidebar = ({ filters, onChange }) => {
                 type="checkbox"
                 checked={selectedRooms.includes(value)}
                 onChange={() => handleRoomCategoryChange(value)}
-                className="w-4 h-4 rounded border-stone-300 text-orange-600 focus:ring-orange-500 bg-stone-50 dark:bg-stone-800 dark:border-stone-700 flex-shrink-0"
+                className="w-4 h-4 rounded border-stone-300 text-orange-600 focus:ring-orange-500 bg-stone-50 dark:bg-stone-800 dark:border-stone-700 shrink-0"
               />
               <span className="text-sm text-stone-600 dark:text-stone-400 group-hover:text-stone-900 dark:group-hover:text-stone-200">
                 {label}
@@ -150,7 +150,7 @@ const FilterSidebar = ({ filters, onChange }) => {
                 name="gender"
                 checked={filters.genderType === value}
                 onChange={() => handleGenderChange(value)}
-                className="w-4 h-4 rounded border-stone-300 text-orange-600 focus:ring-orange-500 bg-stone-50 dark:bg-stone-800 dark:border-stone-700 flex-shrink-0"
+                className="w-4 h-4 rounded border-stone-300 text-orange-600 focus:ring-orange-500 bg-stone-50 dark:bg-stone-800 dark:border-stone-700 shrink-0"
               />
               <span className="text-sm text-stone-600 dark:text-stone-400 group-hover:text-stone-900 dark:group-hover:text-stone-200">
                 {label}
@@ -180,7 +180,7 @@ const FilterSidebar = ({ filters, onChange }) => {
                 name="mess"
                 checked={filters.messType === value}
                 onChange={() => handleMessChange(value)}
-                className="w-4 h-4 rounded border-stone-300 text-orange-600 focus:ring-orange-500 bg-stone-50 dark:bg-stone-800 dark:border-stone-700 flex-shrink-0"
+                className="w-4 h-4 rounded border-stone-300 text-orange-600 focus:ring-orange-500 bg-stone-50 dark:bg-stone-800 dark:border-stone-700 shrink-0"
               />
               <span className="text-sm text-stone-600 dark:text-stone-400 group-hover:text-stone-900 dark:group-hover:text-stone-200">
                 {label}

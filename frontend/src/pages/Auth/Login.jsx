@@ -3,28 +3,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { userLogin, clearError } from "../../redux/slices/authSlices.js"; 
 import { useNavigate, Link } from "react-router-dom";
 import Loader from '../Common/UI/Loader.jsx';
-import { Zap, Eye, EyeOff, Building } from "lucide-react";
+import { Eye, EyeOff, Building } from "lucide-react";
 import { toastError, toastSuccess } from '../../utils/toast.js';
 
 const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
-  // 1. Get requiresVerification from Redux
   const { loading, error, user, requiresVerification } = useSelector((state) => state.auth);
 
-  const [role, setRole] = useState("HOSTELLER"); // Only for dummy data button
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   useEffect(() => {
-    // 2. Check for Verification Redirect First
     if (requiresVerification) {
       navigate("/verify-otp");
       return;
     }
 
-    // 3. Then Check for Successful Login
     if (user) {
       if (user.role === "OWNER" || user.role === "ADMIN") {
         navigate("/owner/dashboard");
@@ -33,7 +29,6 @@ const LoginPage = () => {
       }
     }
 
-    // Cleanup error on unmount
     return () => {
       dispatch(clearError());
     };
@@ -41,17 +36,6 @@ const LoginPage = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const fillDummyData = () => {
-    const dummyData = role === 'OWNER' ? {
-      email: 'praveensingh99036@gmail.com',
-      password: '123456'
-    } : {
-      email: 'student@hopin.com',
-      password: 'password123'
-    };
-    setFormData(dummyData);
   };
 
   const handleLogin = async (e) => {
@@ -80,25 +64,6 @@ const LoginPage = () => {
           <p className="mt-2 text-sm text-stone-500 dark:text-stone-400">
             Sign in to access your Hop-In account
           </p>
-          
-          {process.env.NODE_ENV === 'development' && (
-            <div className="flex gap-2 mt-4">
-               <button
-                type="button"
-                onClick={() => { setRole("HOSTELLER"); fillDummyData(); }}
-                className="flex items-center gap-1 px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs rounded-full transition-colors"
-              >
-                <Zap size={12} /> Student
-              </button>
-              <button
-                type="button"
-                onClick={() => { setRole("OWNER"); fillDummyData(); }}
-                className="flex items-center gap-1 px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs rounded-full transition-colors"
-              >
-                <Zap size={12} /> Owner
-              </button>
-            </div>
-          )}
         </div>
 
         {/* Error Alert */}

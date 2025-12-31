@@ -9,7 +9,7 @@ const NotFound = () => {
   return (
     <div className="min-h-screen w-full bg-stone-950 text-stone-100 flex flex-col items-center justify-center relative overflow-hidden">
       {/* Subtle background gradient */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-stone-950 via-stone-900 to-stone-950" />
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-stone-950 via-stone-900 to-stone-950" />
 
       {/* Animated dotted circle background */}
       <div className="pointer-events-none absolute w-[110vmin] h-[110vmin] rounded-full border border-orange-500/10 flex items-center justify-center">
@@ -27,8 +27,8 @@ const NotFound = () => {
         {/* 404 logo-style block */}
         <div className="relative w-52 h-52 sm:w-64 sm:h-64 flex items-center justify-center rounded-full bg-stone-950 shadow-[0_0_80px_rgba(249,115,22,0.35)] border border-stone-800">
           {/* rotating arcs */}
-          <div className="absolute inset-4 rounded-full border-t-2 border-orange-500/80 border-l-2 border-orange-500/10 border-r-2 border-transparent animate-[spin_12s_linear_infinite]" />
-          <div className="absolute inset-8 rounded-full border-b-2 border-orange-400/70 border-r-2 border-orange-500/10 border-l-2 border-transparent animate-[spin_16s_linear_infinite_reverse]" />
+          <div className="absolute inset-4 rounded-full border-t-2 border-orange-500/80 border-l-2 border-r-2 animate-[spin_12s_linear_infinite]" />
+          <div className="absolute inset-8 rounded-full border-b-2 border-orange-400/70 border-r-2 border-l-2 animate-[spin_16s_linear_infinite_reverse]" />
 
           {/* 404 digits */}
           <div className="relative flex items-center gap-2 text-5xl sm:text-6xl font-black tracking-[0.15em]">

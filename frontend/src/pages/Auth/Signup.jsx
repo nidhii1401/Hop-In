@@ -3,14 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { userSignup, clearError } from "../../redux/slices/authSlices.js";
 import { useNavigate, Link } from "react-router-dom";
 import Loader from '../Common/UI/Loader.jsx';
-import { Building, Eye, EyeOff, Zap, RefreshCw } from "lucide-react";
+import { Building, Eye, EyeOff, RefreshCw } from "lucide-react";
 import { toastError, toastSuccess } from '../../utils/toast.js';
 
 const Signup = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
-  // 1. Get state (Added requiresVerification from our new slice)
   const { loading, error, requiresVerification, user } = useSelector((state) => state.auth || {});
 
   const [role, setRole] = useState("HOSTELLER");
@@ -26,7 +25,7 @@ const Signup = () => {
     avatarUrl: "" 
   });
 
-  // 2. Avatar Logic (Integrated into your UI)
+  // Avatar Logic
   const currentAvatarUrl = formData.avatarUrl || 
     `https://api.dicebear.com/7.x/adventurer/svg?seed=${formData.fullName.replace(/\s+/g, '') || 'default'}`;
 
@@ -38,15 +37,12 @@ const Signup = () => {
     }));
   };
 
-  // 3. Fixed Navigation Logic
   useEffect(() => {
-    // If backend sent OTP, go to Verify Page
     if (requiresVerification) {
       navigate("/verify-otp");
       return;
     }
 
-    // If already logged in, go Home
     if (user) {
       navigate("/");
     }
@@ -60,25 +56,6 @@ const Signup = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const fillDummyData = () => {
-    const dummyData = role === 'OWNER' ? {
-      fullName: 'John Doe Owner',
-      email: `owner_${Date.now()}@hopin.com`, // Unique email to prevent conflict
-      phone: '9876543210',
-      password: 'password123',
-      confirmPassword: 'password123',
-      avatarUrl: ''
-    } : {
-      fullName: 'Jane Smith Student',
-      email: `student_${Date.now()}@hopin.com`,
-      phone: '9876543211',
-      password: 'password123',
-      confirmPassword: 'password123',
-      avatarUrl: ''
-    };
-    setFormData(dummyData);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -88,16 +65,12 @@ const Signup = () => {
     }
 
     try {
-      // Dispatch and unwrap to catch errors locally if needed
       await dispatch(userSignup({ 
         ...formData, 
         role,
         avatarUrl: currentAvatarUrl 
       })).unwrap();
       toastSuccess('Verification code sent to your email');
-      
-      // Navigation is handled by useEffect above
-      
     } catch (err) {
       console.error("Signup failed:", err);
       const msg = err?.message || err || 'Signup failed';
@@ -111,10 +84,10 @@ const Signup = () => {
         
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-8">
-           
-           {/* NEW: Avatar Preview Section (Styled to match your theme) */}
-           <div className="relative group mb-6">
-            <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-orange-100 dark:border-orange-900/30 bg-stone-100 shadow-sm">
+          
+          {/* Avatar Preview Section */}
+          <div className="relative group mb-6">
+           <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-orange-100 dark:border-orange-900/30 bg-stone-100 shadow-sm">
               <img 
                 src={currentAvatarUrl} 
                 alt="Avatar" 
@@ -131,23 +104,12 @@ const Signup = () => {
             </button>
           </div>
 
-        
           <h1 className="text-2xl font-bold tracking-tight text-stone-900 dark:text-stone-100">
             Create an account
           </h1>
           <p className="mt-2 text-sm text-stone-500 dark:text-stone-400">
             Enter your details to get started with Hop-In
           </p>
-          
-          {process.env.NODE_ENV === 'development' && (
-            <button
-              type="button"
-              onClick={fillDummyData}
-              className="mt-4 flex items-center gap-2 px-3 py-1.5 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-600 dark:text-stone-300 text-xs rounded-full font-medium transition-colors"
-            >
-              <Zap size={14} /> Fill Dummy Data
-            </button>
-          )}
         </div>
 
         {/* Error Alert */}
