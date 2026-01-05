@@ -442,7 +442,7 @@ const LandingPage = () => {
             <div className="w-full h-px bg-stone-200 dark:bg-stone-800" />
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <p className="text-stone-500 dark:text-stone-400 text-xs">{new Date().getFullYear()} Hop-In. All rights reserved.</p>
-              <p className="text-stone-500 dark:text-stone-400 text-xs">Built with 🧡 by Praveen Singh.</p>
+              {/* <p className="text-stone-500 dark:text-stone-400 text-xs">Built with 🧡 by Praveen Singh.</p> */}
               <div className="flex gap-4">
                 <a href="#" className="text-stone-400 hover:text-orange-700 dark:hover:text-orange-500 transition-colors" aria-label="Twitter">
                   <Twitter className="h-4 w-4" />
