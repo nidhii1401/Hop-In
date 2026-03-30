@@ -9,7 +9,7 @@ const LandingPage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector(state => state.auth);
+  const user = useSelector(state => state.auth.user);
 
   const handleLogout = async () => {
     try {
