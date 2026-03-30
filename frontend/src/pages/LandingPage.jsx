@@ -312,12 +312,12 @@ const LandingPage = () => {
                   <li>Digital rent payment history</li>
                   <li>Maintenance support tickets</li>
                 </ul>
-                <button 
+                {/* <button 
                   onClick={user?.role === 'HOSTELLER' || user?.role === 'ADMIN' ? () => navigate('/hosteller/dashboard') : () => navigate('/login')}
                   className="mt-auto w-full py-3 rounded-lg bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-sm font-bold hover:opacity-90 transition-opacity"
                 >
                   {user?.role === 'HOSTELLER' || user?.role === 'ADMIN' ? 'Open Resident Dashboard' : 'Resident Login'}
-                </button>
+                </button> */}
               </div>
 
               {/* Owner */}
@@ -332,12 +332,12 @@ const LandingPage = () => {
                   <li>Booking and check-in management</li>
                   <li>Payment tracking and dues</li>
                 </ul>
-                <button 
+                {/* <button 
                   onClick={user?.role === 'OWNER' || user?.role === 'ADMIN' ? () => navigate('/owner/dashboard') : () => navigate('/login')}
                   className="mt-auto w-full py-3 rounded-lg border-2 border-orange-700 text-orange-700 dark:text-orange-500 dark:border-orange-500 text-sm font-bold hover:bg-orange-700 hover:text-white dark:hover:bg-orange-500 dark:hover:text-white transition-colors"
                 >
                   {user?.role === 'OWNER' || user?.role === 'ADMIN' ? 'Open Owner Dashboard' : 'Owner Login'}
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
@@ -453,10 +453,10 @@ const LandingPage = () => {
                 {/* <a href="https://instagram.com" className="text-stone-400 hover:text-orange-700 dark:hover:text-orange-500 transition-colors" aria-label="Instagram">
                   <Instagram className="h-4 w-4" />
                 </a> */}
-                <a href="#" className="text-stone-400 hover:text-orange-700 dark:hover:text-orange-500 transition-colors" aria-label="LinkedIn">
+                <a href="https://www.linkedin.com/in/praveen-singh-004539286/" className="text-stone-400 hover:text-orange-700 dark:hover:text-orange-500 transition-colors" aria-label="LinkedIn">
                   <Linkedin className="h-4 w-4" />
                 </a>
-                <a href="#" className="text-stone-400 hover:text-orange-700 dark:hover:text-orange-500 transition-colors" aria-label="GitHub">
+                <a href="https://github.com/singhpraveen77" className="text-stone-400 hover:text-orange-700 dark:hover:text-orange-500 transition-colors" aria-label="GitHub">
                   <Github className="h-4 w-4" />
                 </a>
               </div>

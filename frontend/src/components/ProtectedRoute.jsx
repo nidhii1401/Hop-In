@@ -10,9 +10,9 @@ const dashboardFor = (role) => {
 };
 
 const ProtectedRoute = ({ children, requiredRole = null }) => {
-  const { user, loading } = useSelector((state) => state.auth);
+  const { user, authChecking } = useSelector((state) => state.auth);
 
-  if (loading) {
+  if (authChecking) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-950">
         <div className="animate-spin h-8 w-8 border-2 border-orange-600 border-t-transparent rounded-full"></div>

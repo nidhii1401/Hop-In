@@ -10,12 +10,14 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
-  const { loading, error, user, requiresVerification } = useSelector((state) => state.auth);
+  const { loading, authChecking, error, user, requiresVerification } = useSelector((state) => state.auth);
 
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   useEffect(() => {
+    if (authChecking) return; // wait for session check to finish
+
     if (requiresVerification) {
       navigate("/verify-otp");
       return;
@@ -32,7 +34,7 @@ const LoginPage = () => {
     return () => {
       dispatch(clearError());
     };
-  }, [user, requiresVerification, navigate, dispatch]);
+  }, [user, requiresVerification, authChecking, navigate, dispatch]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -51,6 +53,9 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen w-full bg-stone-50 dark:bg-stone-950 font-sans flex items-center justify-center p-4">
+      {authChecking ? (
+        <Loader />
+      ) : (
       <div className="w-full max-w-md bg-white dark:bg-stone-900 rounded-xl shadow-lg border border-stone-200 dark:border-stone-800 p-8">
         
         {/* Header matching Layout */}
@@ -153,6 +158,7 @@ const LoginPage = () => {
           </div>
         </form>
       </div>
+      )}
     </div>
   );
 };

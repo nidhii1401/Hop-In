@@ -97,7 +97,8 @@ export const userLogout = createAsyncThunk(
 
 const initialState = {
   user: null, 
-  loading: true, 
+  loading: false,       // login/signup/etc. actions
+  authChecking: true,   // initial session check only
   error: null,
   requiresVerification: false,
   tempEmail: null,
@@ -121,18 +122,18 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Check Auth (On Load)
+      // Check Auth (On Load) — uses authChecking, not loading
       .addCase(checkAuth.pending, (state) => {
-        state.loading = true;
+        state.authChecking = true;
       })
       .addCase(checkAuth.fulfilled, (state, action) => {
-        state.loading = false;
+        state.authChecking = false;
         if (action.payload.user) {
           state.user = action.payload.user;
         }
       })
       .addCase(checkAuth.rejected, (state) => {
-        state.loading = false;
+        state.authChecking = false;
         state.user = null;
       })
 
