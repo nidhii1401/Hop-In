@@ -208,11 +208,16 @@ export const checkAuth = asyncHandler(async (req, res) => {
 
 // 5. LOGOUT
 export const Logout = (req, res) => {
-  res.cookie("token", "none", {
-    expires: new Date(Date.now() + 10 * 1000),
+  // Clear the token cookie with the same secure settings as login
+  const cookieOptions = {
     httpOnly: true,
-  });
-  res.status(200).json({ success: true, message: "Logged out" });
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: 0, // This expires the cookie immediately
+  };
+
+  res.cookie("token", "", cookieOptions);
+  res.status(200).json({ success: true, message: "Logged out successfully" });
 };
 
 // 6. UPDATE PROFILE

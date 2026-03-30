@@ -5,8 +5,6 @@ import { Building, MapPin, Plus, Users, Edit, Home } from 'lucide-react';
 import { getOwnerHostels } from '../../apis/ownerApis.js';
 import Loader from '../Common/UI/Loader.jsx';
 
-const hasValidToken = () => !!localStorage.getItem('token');
-
 const OwnerHostelsPage = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
@@ -17,15 +15,14 @@ const OwnerHostelsPage = () => {
   useEffect(() => {
   console.log('=== OWNER HOSTELS PAGE MOUNTED ===');
   console.log('Current user:', user);
-  console.log('Token in localStorage:', hasValidToken());
   
-  if (user || hasValidToken()) {
+  if (user) {
     fetchHostels();
   } else {
-    console.log('No user or token found');
+    console.log('No user found - redirecting to login');
     navigate('/login');
   }
-}, [user]);
+}, [user, navigate]);
 
   const fetchHostels = async () => {
     try {
